@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/AiReservations.Api/AiReservations.Api.csproj" />
+    <Project Path="src/AiReservations.Application/AiReservations.Application.csproj" />
+    <Project Path="src/AiReservations.Domain/AiReservations.Domain.csproj" />
+    <Project Path="src/AiReservations.Infrastructure/AiReservations.Infrastructure.csproj" />
+  </Folder>
+</Solution>
