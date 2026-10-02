@@ -5,4 +5,7 @@
     <Project Path="src/AiReservations.Domain/AiReservations.Domain.csproj" />
     <Project Path="src/AiReservations.Infrastructure/AiReservations.Infrastructure.csproj" />
   </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/AiReservations.UnitTests/AiReservations.UnitTests.csproj" />
+  </Folder>
 </Solution>

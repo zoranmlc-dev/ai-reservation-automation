@@ -1,4 +1,5 @@
 using AiReservations.Domain.Enums;
+using AiReservations.Domain.Common;
 
 namespace AiReservations.Domain.Entities;
 
@@ -28,6 +29,13 @@ public class ReservationRequest
         string? roomType = null,
         string? specialRequests = null)
     {
+        Validate(
+            guestName,
+            guestEmail,
+            checkIn,
+            checkOut,
+            numberOfGuests);
+            
         Id = Guid.NewGuid();
 
         GuestName = guestName;
@@ -39,6 +47,26 @@ public class ReservationRequest
         SpecialRequests = specialRequests;
 
         Status = ReservationStatus.Pending;
+    }
+
+    private static void Validate(
+        string guestName,
+        string guestEmail,
+        DateOnly checkIn,
+        DateOnly checkOut,
+        int numberOfGuests)
+    {
+        if(string.IsNullOrWhiteSpace(guestName))
+            throw new DomainException("Guest name is required.");
+
+        if(string.IsNullOrWhiteSpace(guestEmail))
+            throw new DomainException("Guest email is required.");
+
+        if(checkOut <= checkIn)
+            throw new DomainException("Check-out date must be after check-in date.");
+
+        if(numberOfGuests <=0)
+            throw new DomainException("Number of guests must be greater than zero.");
     }
 
 }
