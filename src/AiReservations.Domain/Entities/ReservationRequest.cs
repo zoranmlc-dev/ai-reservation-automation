@@ -69,4 +69,47 @@ public class ReservationRequest
             throw new DomainException("Number of guests must be greater than zero.");
     }
 
+    public void Validate()
+    {
+        EnsureStatus(ReservationStatus.Pending);
+
+        Status = ReservationStatus.Validated;
+    }
+
+    public void Confirm()
+    {
+        EnsureStatus(ReservationStatus.Validated);
+
+        Status = ReservationStatus.Confirmed;
+    }
+
+    public void Reject()
+    {
+        if(Status is ReservationStatus.Confirmed or ReservationStatus.Cancelled)
+            throw new DomainException(
+                $"Reservation cannot be rejected when status is {Status}");
+
+        Status = ReservationStatus.Rejected;
+    }
+
+    public void Cancel()
+    {
+        if(Status == ReservationStatus.Cancelled)
+            throw new DomainException(
+                "Reservation is already cancelled");
+
+        if(Status == ReservationStatus.Rejected)
+            throw new DomainException(
+                "Rejected reservation cannot be canceled");
+
+        Status = ReservationStatus.Cancelled;
+    }
+
+    private void EnsureStatus(ReservationStatus expectedStatus)
+    {
+        if(Status != expectedStatus)
+            throw new DomainException(
+                $"Reservation must have status {expectedStatus} to perform this operation.");
+    }
+
 }

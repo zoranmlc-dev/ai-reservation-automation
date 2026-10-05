@@ -106,4 +106,89 @@ public class ReservationRequestTests
 
         Assert.Throws<DomainException>(act);
     }
+
+    [Fact]
+    public void Should_Validate_Pending_Reservation()
+    {
+        var reservation = CreateValidReservation();
+
+        reservation.Validate();
+
+        Assert.Equal(
+            ReservationStatus.Validated,
+            reservation.Status);
+    }
+
+    [Fact]
+    public void Should_Confirm_Validated_Reservation()
+    {
+        var reservation = CreateValidReservation();
+
+        reservation.Validate();
+        reservation.Confirm();
+
+        Assert.Equal(
+            ReservationStatus.Confirmed,
+            reservation.Status);
+    }
+
+    [Fact]
+    public void Should_Not_Confirm_Pending_Reservation()
+    {
+        var reservation = CreateValidReservation();
+
+        var act = () => reservation.Confirm();
+
+        Assert.Throws<DomainException>(act);
+        Assert.Equal(ReservationStatus.Pending, reservation.Status);
+    }
+
+    [Fact]
+    public void Should_Not_Validate_Reservation_Twice()
+    {
+        var reservation = CreateValidReservation();
+        reservation.Validate();
+
+        var act = () => reservation.Validate();
+
+        Assert.Throws<DomainException>(act);
+        Assert.Equal(ReservationStatus.Validated, reservation.Status);
+    }
+
+    [Fact]
+    public void Should_Not_Reject_Confirmed_Reservation()
+    {
+        var reservation = CreateValidReservation();
+        reservation.Validate();
+        reservation.Confirm();
+
+        var act = () => reservation.Reject();
+
+        Assert.Throws<DomainException>(act);
+        Assert.Equal(ReservationStatus.Confirmed, reservation.Status);
+    }
+
+    [Fact]
+    public void Should_Not_Cancel_Rejected_Reservation()
+    {
+        var reservation = CreateValidReservation();
+        reservation.Reject();
+
+        var act = () => reservation.Cancel();
+
+        Assert.Throws<DomainException>(act);
+        Assert.Equal(ReservationStatus.Rejected, reservation.Status);
+    }
+
+    private static ReservationRequest CreateValidReservation()
+    {
+        return new ReservationRequest(
+            guestName: "Petar Petrovic",
+            guestEmail: "petrovic@example.com",
+            checkIn: new DateOnly(2026, 10, 12),
+            checkOut: new DateOnly(2026, 10, 16),
+            numberOfGuests: 2,
+            roomType: "Studio Central",
+            specialRequests: "Late check-in");
+    }
 }
