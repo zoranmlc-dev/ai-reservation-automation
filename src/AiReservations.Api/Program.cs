@@ -1,4 +1,5 @@
 using AiReservations.Application.Reservations.Services;
+using AiReservations.Api.ExceptionHandling;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,8 +9,12 @@ builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 builder.Services.AddScoped<IReservationService, ReservationService>();
+builder.Services.AddExceptionHandler<DomainExceptionHandler>();
+builder.Services.AddProblemDetails();
 
 var app = builder.Build();
+
+app.UseExceptionHandler();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
