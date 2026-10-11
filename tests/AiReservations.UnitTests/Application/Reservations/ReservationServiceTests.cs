@@ -35,4 +35,27 @@ public class ReservationServiceTests
         Assert.Equal("Late check-in", reservation.SpecialRequests);
         Assert.Equal(ReservationStatus.Pending, reservation.Status);
     }
+
+    [Fact]
+    public void Create_Should_Throw_when_CheckOut_Is_Before_CheckIn()
+    {
+        // Arrange
+        var command = new CreateReservationCommand(
+            GuestName: "Petar Petrovic",
+            GuestEmail: "petrovic@example.com",
+            CheckIn: new DateOnly(2026, 11, 15),
+            CheckOut: new DateOnly(2026, 11, 10),
+            NumberOfGuests: 2,
+            RoomType: null,
+            SpecialRequests: null
+        );
+
+        var service = new ReservationService();
+
+        // Act
+        var act = () => service.Create(command);
+
+        // Assert
+        Assert.Throws<AiReservations.Domain.Common.DomainException>(act);
+    }
 }
