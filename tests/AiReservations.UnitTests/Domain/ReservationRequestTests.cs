@@ -180,6 +180,18 @@ public class ReservationRequestTests
         Assert.Equal(ReservationStatus.Rejected, reservation.Status);
     }
 
+    [Fact]
+    public void Should_Cancel_Pending_Reservation()
+    {
+        var reservation = CreateValidReservation();
+
+        reservation.Cancel();
+
+        Assert.Equal(
+            ReservationStatus.Cancelled, 
+            reservation.Status);
+    }
+
     private static ReservationRequest CreateValidReservation()
     {
         return new ReservationRequest(
