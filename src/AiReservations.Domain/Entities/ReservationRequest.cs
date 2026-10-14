@@ -20,6 +20,12 @@ public class ReservationRequest
 
     public ReservationStatus Status { get; private set; }
 
+    private ReservationRequest()
+    {
+        GuestName = null!;
+        GuestEmail = null!;
+    }
+
     public ReservationRequest(
         string guestName,
         string guestEmail,

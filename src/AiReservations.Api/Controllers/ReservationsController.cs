@@ -17,8 +17,9 @@ public sealed class ReservationsController : ControllerBase
     }
 
     [HttpPost]
-    public IActionResult Create(
-        [FromBody] CreateReservationRequest request)
+    public async Task<IActionResult> Create(
+        [FromBody] CreateReservationRequest request,
+        CancellationToken cancellationToken)
     {
         var command = new CreateReservationCommand(
             request.GuestName,
@@ -29,7 +30,9 @@ public sealed class ReservationsController : ControllerBase
             request.RoomType,
             request.SpecialRequests);
 
-        var reservation = _reservationService.Create(command);
+        var reservation = await _reservationService.CreateAsync(
+            command,
+            cancellationToken);
 
         return Ok(new
         {

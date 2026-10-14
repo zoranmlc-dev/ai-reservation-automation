@@ -1,13 +1,23 @@
 using AiReservations.Application.Reservations.Commands.CreateReservation;
 using AiReservations.Domain.Entities;
+using AiReservations.Application.Reservations.Repositories;
 
 namespace AiReservations.Application.Reservations.Services;
 
 public sealed class ReservationService : IReservationService
 {
-    public ReservationRequest Create(CreateReservationCommand command)
+    private readonly IReservationRepository _repository;
+
+    public ReservationService(IReservationRepository repository)
     {
-        return new ReservationRequest(
+        _repository = repository;
+    }
+
+    public async Task<ReservationRequest> CreateAsync(
+        CreateReservationCommand command,
+        CancellationToken cancellationToken = default)
+    {
+        var reservation = new ReservationRequest(
             command.GuestName,
             command.GuestEmail,
             command.CheckIn,
@@ -15,5 +25,9 @@ public sealed class ReservationService : IReservationService
             command.NumberOfGuests,
             command.RoomType,
             command.SpecialRequests);
+
+        await _repository.AddAsync(reservation, cancellationToken);
+
+        return reservation;
     }
 }

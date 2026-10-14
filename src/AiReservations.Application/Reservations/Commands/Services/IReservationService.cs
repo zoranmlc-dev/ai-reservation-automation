@@ -5,5 +5,7 @@ namespace AiReservations.Application.Reservations.Services;
 
 public interface IReservationService
 {
-    ReservationRequest Create(CreateReservationCommand command);
+    Task<ReservationRequest> CreateAsync(
+        CreateReservationCommand command,
+        CancellationToken cancellationToken = default);
 }

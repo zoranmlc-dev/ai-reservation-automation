@@ -1,13 +1,14 @@
 using AiReservations.Application.Reservations.Commands.CreateReservation;
 using AiReservations.Application.Reservations.Services;
 using AiReservations.Domain.Enums;
+using AiReservations.UnitTests.Fakes;
 
 namespace AiReservations.UnitTests.Application.Reservations;
 
 public class ReservationServiceTests
 {
     [Fact]
-    public void Create_Should_Create_Pending_Reservation()
+    public async Task Create_Should_Create_Pending_Reservation()
     {
         // Arrange
         var command = new CreateReservationCommand(
@@ -19,10 +20,11 @@ public class ReservationServiceTests
             RoomType: "Studio Central",
             SpecialRequests: "Late check-in");
 
-        var service = new ReservationService();
+        var repository = new FakeReservationRepository();
+        var service = new ReservationService(repository);
 
         // Act
-        var reservation = service.Create(command);
+        var reservation = await service.CreateAsync(command);
 
         // Assert
         Assert.NotEqual(Guid.Empty, reservation.Id);
@@ -34,10 +36,11 @@ public class ReservationServiceTests
         Assert.Equal("Studio Central", reservation.RoomType);
         Assert.Equal("Late check-in", reservation.SpecialRequests);
         Assert.Equal(ReservationStatus.Pending, reservation.Status);
+        Assert.Same(reservation, repository.SavedReservation);
     }
 
     [Fact]
-    public void Create_Should_Throw_when_CheckOut_Is_Before_CheckIn()
+    public async Task Create_Should_Throw_When_CheckOut_Is_Before_CheckIn()
     {
         // Arrange
         var command = new CreateReservationCommand(
@@ -50,12 +53,14 @@ public class ReservationServiceTests
             SpecialRequests: null
         );
 
-        var service = new ReservationService();
+        var repository = new FakeReservationRepository();
+        var service = new ReservationService(repository);
 
         // Act
-        var act = () => service.Create(command);
+        var act = async () => await service.CreateAsync(command);
 
         // Assert
-        Assert.Throws<AiReservations.Domain.Common.DomainException>(act);
+        await Assert.ThrowsAsync<AiReservations.Domain.Common.DomainException>(act);
+        Assert.Null(repository.SavedReservation);
     }
 }
