@@ -1,6 +1,7 @@
 using AiReservations.Application.Reservations.Commands.CreateReservation;
 using AiReservations.Application.Reservations.Services;
 using AiReservations.Domain.Enums;
+using AiReservations.Domain.Entities;
 using AiReservations.UnitTests.Fakes;
 
 namespace AiReservations.UnitTests.Application.Reservations;
@@ -62,5 +63,49 @@ public class ReservationServiceTests
         // Assert
         await Assert.ThrowsAsync<AiReservations.Domain.Common.DomainException>(act);
         Assert.Null(repository.SavedReservation);
+    }
+
+    [Fact]
+    public async Task GetByIdAsync_WhenReservationExists_ReturnsReservation()
+    {
+        // Arrange
+        var repository = new FakeReservationRepository();
+
+        var reservation = new ReservationRequest(
+            "Petar Petrovic",
+            "petrovic@example.com",
+            new DateOnly(2026, 11, 10),
+            new DateOnly(2026, 11, 15),
+            2,
+            null,
+            null
+        );
+        
+        await repository.AddAsync(reservation);
+
+        var service = new ReservationService(repository);
+        
+        // Act
+        ReservationRequest? result = await service.GetByIdAsync(reservation.Id);
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(reservation.Id, result.Id);
+    }
+
+    [Fact]
+    public async Task GetByIdAsync_WhenReservationDoesNotExist_ReturnsNull()
+    {
+        // Arrange
+        var repository = new FakeReservationRepository();
+        var service = new ReservationService(repository);
+
+        Guid nonExistingId = Guid.NewGuid();
+
+        // Act
+        ReservationRequest? result = await service.GetByIdAsync(nonExistingId);
+
+        // Assert
+        Assert.Null(result);
     }
 }

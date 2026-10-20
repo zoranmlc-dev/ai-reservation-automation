@@ -8,4 +8,8 @@ public interface IReservationService
     Task<ReservationRequest> CreateAsync(
         CreateReservationCommand command,
         CancellationToken cancellationToken = default);
+
+    Task<ReservationRequest?> GetByIdAsync(
+        Guid id,
+        CancellationToken cancellationToken = default);
 }

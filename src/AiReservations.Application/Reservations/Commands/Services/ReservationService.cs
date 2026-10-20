@@ -30,4 +30,11 @@ public sealed class ReservationService : IReservationService
 
         return reservation;
     }
+
+    public async Task<ReservationRequest?> GetByIdAsync(
+        Guid id,
+        CancellationToken cancellationToken = default)
+    {
+        return await _repository.GetByIdAsync(id, cancellationToken);
+    }
 }

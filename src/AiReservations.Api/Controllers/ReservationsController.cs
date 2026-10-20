@@ -40,4 +40,22 @@ public sealed class ReservationsController : ControllerBase
             reservation.Status
         });
     }
+
+    [HttpGet("{id:guid}")]
+    public async Task<IActionResult> GetById(
+        Guid id,
+        CancellationToken cancellationToken = default)
+    {
+        var reservation = await _reservationService.GetByIdAsync(
+            id, 
+            cancellationToken);
+        if (reservation is null)
+        {
+            return NotFound();
+        }
+
+        return Ok(reservation);
+    }
+
+    
 }
