@@ -21,6 +21,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\AiReservations.Domain\AiReservations.Domain.csproj" />
     <ProjectReference Include="..\..\src\AiReservations.Application\AiReservations.Application.csproj" />
+    <ProjectReference Include="..\..\src\AiReservations.Api\AiReservations.Api.csproj" />
   </ItemGroup>
 
 </Project>

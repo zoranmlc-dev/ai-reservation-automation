@@ -54,8 +54,6 @@ public sealed class ReservationsController : ControllerBase
             return NotFound();
         }
 
-        return Ok(reservation);
+        return Ok(reservation.ToResponse());
     }
-
-    
 }
