@@ -1,0 +1,25 @@
+# Git
+.git
+.gitignore
+
+# .NET build outputs
+**/bin/
+**/obj/
+
+# IDE
+.vs/
+.vscode/
+.idea/
+
+# Local configuration and secrets
+**/secrets.json
+**/.env
+**/.env.*
+**/appsettings.Local.json
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
